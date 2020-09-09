@@ -1,3 +1,7 @@
+/* Simple class for storage of x, y coordinates, so that the coordinates
+ * can be used for various game logic functions and a representation of position
+ * of various game objects.
+ */
 
 public class Coord {
 	int x;
