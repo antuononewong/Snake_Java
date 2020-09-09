@@ -9,21 +9,34 @@ import javax.swing.InputMap;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
+/* Handles all player game logic. Defines movement, game state checks, 
+ * and interactions between player and other objects
+ */
+
+@SuppressWarnings("serial")
 public class Player extends JPanel {
+	// Board Dimensions
 	int width = Board.boardWidth;
 	int height = Board.boardHeight;
 	int leftBorderWidth = Board.leftBorderWidth;
 	int topBorderHeight = Board.topBorderHeight;
+	
+	// Starting position of Player
 	int x = width / 2;
 	int y = height / 2;
+	
+	// Player properties
 	static int size = 20;
 	int initial = 0;
 	int speed = 20;
 	char direction = 'x';
+	
+	// Other game objects
 	Egg egg;
 	SnakeScheduler scheduler;
 	ArrayList<Coord> pieces = new ArrayList<Coord>();
 	
+	// Constructor
 	public Player(Egg egg) {
 		this.egg = egg;
 		this.setPreferredSize(new Dimension(0, 0));
@@ -33,6 +46,8 @@ public class Player extends JPanel {
         pieces.add(new Coord(x, y));
 	}
 	
+	// Defines Player movement events and adds them to the input map
+	// of the project
 	public void setMovement() {
 		Action moveRight = new AbstractAction(){
             public void actionPerformed(ActionEvent e) {
@@ -84,8 +99,11 @@ public class Player extends JPanel {
         actionMap.put("pause", pause);
 	}
 	
+	// Adjusts direction the snake moves based on user input. 
 	public void changeDirection(char c, String direction) { 
-		if (direction.equals("up") && speed > 0 && this.direction == 'y') {} //do nothing
+		
+		// Do nothing when pressing key for same direction as snake
+		if (direction.equals("up") && speed > 0 && this.direction == 'y') {} 
 		else if (direction.equals("down") && speed < 0 && this.direction == 'y') {}
 		else if (direction.equals("left") && speed > 0 && this.direction == 'x') {}
 		else if (direction.equals("right") && speed < 0 && this.direction == 'x') {}
@@ -109,6 +127,9 @@ public class Player extends JPanel {
 		}
 	}
 	
+	// Shifts the head of the snake to new position based on current
+	// movement direction. Moves each block of the snake to the position
+	// of the previous block.
 	public void moveSnake() {
 		int headIndex = pieces.size() - 1;
 		Coord head = pieces.get(headIndex);
@@ -133,6 +154,8 @@ public class Player extends JPanel {
 		}
 	}
 	
+	// Handles interaction between white blocks and the snake. If there
+	// is a collision, the white block becomes the head of snake.
 	public void eatEgg() {
 		Coord position = egg.getPosition();
 		Coord head = pieces.get(pieces.size() - 1);
@@ -145,6 +168,8 @@ public class Player extends JPanel {
 		}
 	}
 	
+	// Checks whether snake head has left bounds of play space. If so, stop
+	// the game through scheduler.
 	public void checkDeath() {
 		Coord head = pieces.get(pieces.size() - 1);
 		int x = head.getX();
@@ -158,6 +183,7 @@ public class Player extends JPanel {
 		}
 	}
 	
+	// Helper/debug function to print out all blocks of a snake to console
 	public void printPieces() {
 		for (int i = 0; i < pieces.size(); i++) {
 			Coord coord = pieces.get(i);
